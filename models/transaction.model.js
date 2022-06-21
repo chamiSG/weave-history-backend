@@ -1,9 +1,11 @@
+const { off } = require("./db.js");
 const sql = require("./db.js");
 // constructor
 const Transaction = function(transaction) {
   this.address = transaction.address;
   this.type = transaction.type;
   this.transactionHash = transaction.transactionHash;
+  this.methodId = transaction.methodId;
   this.fromAddress = transaction.fromAddress;
   this.toAddress = transaction.toAddress;
   this.value = transaction.value;
@@ -11,6 +13,7 @@ const Transaction = function(transaction) {
   this.blockTimestamp = transaction.blockTimestamp;
   this.blockNumber = transaction.blockNumber;
   this.blockHash = transaction.blockHash;
+  this.network = transaction.network;
 };
 
 Transaction.create = (newTransaction, result) => {
@@ -20,7 +23,7 @@ Transaction.create = (newTransaction, result) => {
       result(err, null);
       return;
     }
-    console.log("created transaction: ", { id: res.insertId, ...newTransaction });
+    // console.log("created transaction: ", { id: res.insertId, ...newTransaction });
     result(null, { id: res.insertId, ...newTransaction });
   });
 };
@@ -102,6 +105,52 @@ Transaction.getAllByAddress = (address, limit, offset, result) => {
   if (limit && offset) {
     query += ` LIMIT ${limit} OFFSET ${offset}`
   }
+  sql.query(query, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+    console.log("transactions: ", res);
+    result(null, res);
+  });
+};
+Transaction.getAll = (transactionHash, fromAddress, toAddress, address, limit, offset, result) => {
+  console.log(transactionHash, fromAddress, toAddress, address, limit, offset);
+  let query = "SELECT * FROM transactions";
+  if (transactionHash || fromAddress || toAddress || address) {
+    query += ` WHERE`;
+  }
+
+  if (transactionHash) {
+    query += ` transactionHash LIKE '%${transactionHash}%'`;
+  }
+  if (transactionHash && (fromAddress || toAddress || address)) {
+    query += ` AND`;
+  }
+
+  if (fromAddress) {
+    query += ` fromAddress LIKE '%${fromAddress}%'`;
+  }
+  if (fromAddress && (toAddress || address)) {
+    query += ` AND`;
+  }
+
+  if (toAddress) {
+    query += ` toAddress LIKE '%${toAddress}%'`;
+  }
+  if (toAddress && address) {
+    query += ` AND`;
+  }
+
+  if (address) {
+    query += ` address LIKE '%${address}%'`;
+  }
+
+  if (limit && offset) {
+    query += ` LIMIT ${limit} OFFSET ${offset}`
+  }
+
   sql.query(query, (err, res) => {
     if (err) {
       console.log("error: ", err);

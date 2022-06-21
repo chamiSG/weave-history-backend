@@ -1,6 +1,6 @@
 module.exports = {
-  HOST: "localhost",
+  HOST: "192.168.105.95",
   USER: "root",
-  PASSWORD: "",
+  PASSWORD: "root",
   DB: "eventdb"
 };

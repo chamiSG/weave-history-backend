@@ -25,7 +25,7 @@ dotenv.config();
 //   },
 // };
 
-const getTokenTransferHistory = async (address, type, prevBlockNumber, curBlockNumber) => {
+const getTokenTransferHistory = async (network, address, type, prevBlockNumber, curBlockNumber) => {
 
   const limit = 100;
   const options = {
@@ -40,6 +40,8 @@ const getTokenTransferHistory = async (address, type, prevBlockNumber, curBlockN
   }
 
   for (let i = 0; i < result.data.result.length; i++) {
+    let transRes = await axios.get(`https://deep-index.moralis.io/api/v2/transaction/${result.data.result[i].transaction_hash}?chain=${process.env.CHAIN_ID}`, options);
+    console.log('transRes', transRes.data.input.slice(0, 10));
     res = await axios({
       method: 'post',
       url: `${process.env.HOST}/api/transactions/`,
@@ -47,13 +49,15 @@ const getTokenTransferHistory = async (address, type, prevBlockNumber, curBlockN
         'address': address,
         'type': type,
         'transactionHash': result.data.result[i].transaction_hash,
+        'methodId': transRes.data.input.slice(0, 10),
         'fromAddress': result.data.result[i].from_address,
         'toAddress': result.data.result[i].to_address,
         'value': result.data.result[i].block_number,
         'userAddress': result.data.result[i].address,
-        'blockTimestamp': moment(result.data.result[i].block_timestamp).fromNow(),
+        'blockTimestamp': result.data.result[i].block_timestamp,
         'blockNumber': result.data.result[i].block_number,
         'blockHash': result.data.result[i].block_hash,
+        'network': network
       }
     });
   }

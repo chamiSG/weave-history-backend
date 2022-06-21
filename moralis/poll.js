@@ -41,7 +41,7 @@ const poll_func = async () => {
     }
 
     for (let j = 0; j < config['tokens'].length; j++) {
-      getTokenTransferHistory(config['tokens'][j], 0, prevBlockNumber, curBlockNumber);
+      await getTokenTransferHistory('bsc', config['tokens'][j], 0, prevBlockNumber, curBlockNumber);
     }
     // for (let j = 0; j < config['contracts'].length; j++) {
     //   getTokenTransferHistory(config['contracts'][j], 1, prevBlockNumber, curBlockNumber);

@@ -21,13 +21,15 @@ sql.connect(error => {
     address varchar(255) DEFAULT NULL,
     type tinyint(1) DEFAULT NULL,
     transactionHash varchar(255) DEFAULT NULL,
+    methodId varchar(255) DEFAULT NULL,
     fromAddress varchar(255) DEFAULT NULL,
     toAddress varchar(255) DEFAULT NULL,
     value int(255) DEFAULT NULL,
     userAddress varchar(255) DEFAULT NULL,
     blockTimestamp varchar(255) DEFAULT NULL,
     blockNumber varchar(255) DEFAULT NULL,
-    blockHash varchar(255) DEFAULT NULL
+    blockHash varchar(255) DEFAULT NULL,
+    network varchar(255) DEFAULT NULL
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8`;
 
   sql.query(createBlockNumber, function(err, results, fields) {
