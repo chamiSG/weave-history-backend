@@ -5,7 +5,7 @@ const BlockNumber = function(blocknumber) {
 };
 
 BlockNumber.create = (newBlocknumber, result) => {
-  sql.query("INSERT INTO blocknumber VALUES('', ?)", newBlocknumber, (err, res) => {
+  sql.query("INSERT INTO blocknumber VALUES(null, ?)", newBlocknumber, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
